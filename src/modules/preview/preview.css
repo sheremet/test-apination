@@ -1,0 +1,17 @@
+.preview .total {
+    margin-left: 10%;
+    text-align: left;
+    font-weight: 400;
+}
+
+.preview .preview-container {
+    width: 25%;
+    margin: 15px 10%;
+    display: flex;
+    float: left;
+    border: 1px solid grey;
+}
+
+.preview .preview-container .stripe {
+    height: 100px;
+}

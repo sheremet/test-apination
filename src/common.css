@@ -1,0 +1,8 @@
+.stripe {
+    display: inline-flex;
+    flex: 1;
+    flex-direction: column;
+    height: 200px;
+}
+
+
