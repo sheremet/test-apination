@@ -11,12 +11,5 @@ coverage
 build
 
 # misc
-.DS_Store
 .env
 npm-debug.log
-.gitignore
-.idea/
-README.md
-package.json
-public/
-src/
