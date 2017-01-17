@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 class PreviewStripe extends Component{
 
     getPreviewStripesWidth(){
-        return  Math.round(100/this.props.stripesCount * 100000) / 100000+'%';
+        return  Math.round(100/this.props.stripesCount * 10000) / 10000+'%';
     }
 
     render(){

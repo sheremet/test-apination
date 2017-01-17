@@ -6,7 +6,7 @@ import shortid from 'shortid';
 
 class PreviewStripes extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.name = this.props.name || shortid.generate();
         this.props.initPreviewStripe(this.name);
@@ -14,13 +14,11 @@ class PreviewStripes extends Component {
 
     render() {
         let stripes = this.props.stripesPreview[this.name].map((stripe) => {
-
-              return(<Preview key={stripe.id}
-                         stripe={stripe}
-                         stripesCount={this.props.stripesPreview[this.name].length}
-                />)
-            }
-        );
+            return (<Preview key={stripe.id}
+                             stripe={stripe}
+                             stripesCount={this.props.stripesPreview[this.name].length}
+            />)
+        });
         return (
             <div className="preview-container">
                 {stripes}
@@ -32,7 +30,7 @@ class PreviewStripes extends Component {
 function mapStateToProps(state) {
     return {
         stripesPreview: state.preview,
-        stripes:state.main
+        stripes: state.main
     };
 }
 

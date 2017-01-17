@@ -42,39 +42,43 @@ const init = (state = [], cnt = 8) => {
 };
 
 
-export default (state = {}, action = {}) => {
+const addStripe = (state) => {
+    Object.keys(state).forEach((key) => {
+        let odd = state[key].length % 2;
+        state[key].push({
+            id: shortid.generate(),
+            colour: odd ? helper.colour().white() : helper.colour().withoutRed(),
+            isRed: false
+        });
+    });
+    return state;
+};
 
+const removeStripe = (state) => {
     const getIndexNotRed = (key, i) => {
         if (state[key][i].isRed) {
             return getIndexNotRed(key, i - 1);
         }
         return i;
     };
+    Object.keys(state).forEach((key) => {
+        let index = getIndexNotRed(key, state[key].length - 1);
+        if (index > 1 && state[key].length > 8) {
+            state[key].splice(index, 1);
+        }
+    });
+    return state;
+};
 
+export default (state = {}, action = {}) => {
     switch (action.type) {
         case INIT_PREVIEW_STRIPE:
             state[action.name] = init();
             return state;
         case ADD_STRIPE:
-            Object.keys(state).forEach((key) => {
-                let odd = state[key].length % 2;
-                state[key].push({
-                    id: shortid.generate(),
-                    colour: odd ? helper.colour().white() : helper.colour().withoutRed(),
-                    isRed: false
-                });
-            });
-            return state;
+            return addStripe(state);
         case REMOVE_STRIPE:
-            Object.keys(state).forEach((key) => {
-                let index = getIndexNotRed(key, state[key].length - 1);
-                if (index > 1 && state[key].length > 8) {
-                    state[key].splice(index, 1);
-                }
-            });
-            return state;
-
-
+            return removeStripe(state);
         default:
             return state;
     }

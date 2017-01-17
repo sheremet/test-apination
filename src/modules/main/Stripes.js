@@ -7,26 +7,40 @@ import './main.css';
 
 class Stripes extends Component {
 
+    setIncreaseButtonToDisabled() {
+        let width = 100;
+        return (width / this.props.stripes.length) === 1;
+    }
+
+    setDecreaseButtonDisabled() {
+        return this.props.stripes.length === 1
+    }
+
     getLastIndex() {
         return this.props.stripes.length ? this.props.stripes[this.props.stripes.length - 1].id : 1;
     }
 
     render() {
-        const stripes = this.props.stripes.map((stripe) =>
-            <Stripe key={stripe.id}
-                    stripe={stripe}
-                    stripesCount={this.props.stripes.length}
-            />
-        );
+        const stripes = this.props.stripes.map((stripe) => {
+            return (<Stripe key={stripe.id}
+                            stripe={stripe}
+                            stripesCount={this.props.stripes.length}
+            />);
+        });
         return (
             <div className="stripes-container">
                 <div className="main">
                     <div className="container">
                         <div className="main-stripes-container">{stripes}</div>
-                        <Controls methods={{
-                            removeStripe: this.props.removeStripe,
-                            addStripe: this.props.addStripe
-                        }} lastIndex={this.getLastIndex()}/>
+                        <Controls
+                            methods={{
+                                removeStripe: this.props.removeStripe,
+                                addStripe: this.props.addStripe
+                            }}
+                            lastIndex={this.getLastIndex()}
+                            increaseButtonDisabled={this.setIncreaseButtonToDisabled()}
+                            decreaseButtonDisabled={this.setDecreaseButtonDisabled()}
+                        />
                     </div>
                 </div>
                 <div className="preview">
@@ -57,8 +71,8 @@ class Controls extends Component {
         return (
             <div className="container-controls">
                 <div className="controls">
-                    <button onClick={this.removeStripe}>-</button>
-                    <button onClick={this.addStripe}>+</button>
+                    <button onClick={this.removeStripe} disabled={this.props.decreaseButtonDisabled}>-</button>
+                    <button onClick={this.addStripe} disabled={this.props.increaseButtonDisabled}>+</button>
                 </div>
             </div>
         )
