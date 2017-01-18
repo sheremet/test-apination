@@ -1,8 +1,8 @@
-const random = (min, max) => {
+export const random = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const colour = () => {
+export const colour = () => {
 
     const generate = (r, g, b) => {
         return 'rgb(' + r + ',' + g + ',' + b + ')';
@@ -34,9 +34,23 @@ const colour = () => {
     }
 };
 
+export const changeColourOfStripe = (e, ctx, keyName, scope)=>{
+    let scopeCtx = scope ? ctx.props[keyName][scope] : ctx.props[keyName];
+    scopeCtx.forEach(function (v, k) {
+        if(v.id === e.nativeEvent.target.id
+            && !scopeCtx[k].colourChanged
+            && !scopeCtx[k].isRed
+        ){
+            e.nativeEvent.target.style.backgroundColor = colour().withoutRed();
+            scopeCtx[k].colourChanged = true;
+        }
+    });
+};
+
 let helper = {
     colour,
-    random
+    random,
+    changeColourOfStripe
 };
 
 export default helper;

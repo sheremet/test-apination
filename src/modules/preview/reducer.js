@@ -1,34 +1,22 @@
 import {INIT_PREVIEW_STRIPE} from './actions/types';
 import {ADD_STRIPE, REMOVE_STRIPE} from '../main/actions/types';
-import shortid from 'shortid';
-import helper from '../../shared/helper';
+import {generate} from 'shortid';
+import {random, colour} from '../../shared/helper';
 
 const init = (state = [], cnt = 8) => {
     const generateIndexForRed = (num) => {
-        let evens = [];
-        const getEvens = (num) => {
-            for (let i = 1; i <= num; i++) {
-                if (i % 2) {
-                    evens.push(i);
-                }
-            }
-        };
-        getEvens(num);
-        let len = evens.length;
-        return evens[helper.random(0, len - 1)] - 1;
+        return random(0, num - 1);
     };
 
     let redIndex = generateIndexForRed(cnt);
 
     const generateItem = () => {
-        let len = state.length,
-            odd = len % 2,
-            item = {
-                id: shortid.generate(),
+        let item = {
+                id: generate(),
                 isRed: false
             };
         const returnObj = () => {
-            item.colour = odd ? helper.colour().white() : helper.colour().withoutRed();
+            item.colour = colour().withoutRed();
             return item;
         };
         return returnObj();
@@ -36,7 +24,7 @@ const init = (state = [], cnt = 8) => {
     for (let i = 0; i < cnt; i++) {
         state.push(generateItem());
     }
-    state[redIndex].colour = helper.colour().red();
+    state[redIndex].colour = colour().red();
     state[redIndex].isRed = true;
     return state;
 };
@@ -44,10 +32,9 @@ const init = (state = [], cnt = 8) => {
 
 const addStripe = (state) => {
     Object.keys(state).forEach((key) => {
-        let odd = state[key].length % 2;
         state[key].push({
-            id: shortid.generate(),
-            colour: odd ? helper.colour().white() : helper.colour().withoutRed(),
+            id: generate(),
+            colour: colour().withoutRed(),
             isRed: false
         });
     });
@@ -61,10 +48,21 @@ const removeStripe = (state) => {
         }
         return i;
     };
-    Object.keys(state).forEach((key) => {
-        let index = getIndexNotRed(key, state[key].length - 1);
-        if (index > 1 && state[key].length > 8) {
+
+    const removeNotRed = (key, len, index)=>{
+        if((len - 1) === index){
             state[key].splice(index, 1);
+        }else {
+            state[key].splice(0, 1);
+        }
+    };
+    Object.keys(state).forEach((key) => {
+        let len = state[key].length;
+        let index = getIndexNotRed(key, len - 1);
+        if(len > 2){
+            state[key].splice(index, 1);
+        }else if(len === 2){
+            removeNotRed(key, len, index);
         }
     });
     return state;

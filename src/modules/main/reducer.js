@@ -1,22 +1,22 @@
 import {ADD_STRIPE, REMOVE_STRIPE} from './actions/types';
-import shortid from 'shortid';
-import helper from '../../shared/helper';
+import {generate} from 'shortid';
+import {colour} from '../../shared/helper';
 
 const init = (state, cnt = 8) => {
     const generateItem = () => {
         let len = state.length,
             odd = len % 2,
             item = {
-                id: shortid.generate(),
+                id: generate(),
                 isRed: false
             };
         const returnObj = () => {
             if (len === 6) {
-                item.colour = helper.colour().red();
+                item.colour = colour().red();
                 item.isRed = true;
                 return item;
             }
-            item.colour = odd ? helper.colour().white() : helper.colour().silver();
+            item.colour = odd ? colour().white() : colour().silver();
             return item;
         };
         return returnObj();
@@ -34,25 +34,46 @@ const removeStripe = (state) => {
         }
         return i;
     };
+    const removeNotRed = (len, index)=>{
+        if((len - 1) === index){
+            state.splice(index, 1);
+        }else {
+            state.splice(0, 1);
+        }
+    };
     let index = getIndexNotRed(state.length - 1);
-    if (index >= 0 && state.length > 8) {
+    if (index >= 2) {
+        state.splice(0, 1);
         return [
-            ...state.slice(0, index),
-            ...state.slice(index + 1)
+            ...state
+        ];
+    }else {
+        removeNotRed(state.length, index);
+        return [
+            ...state
         ];
     }
-    return state;
 };
 
 const addStripe = (state) => {
     let odd = state.length % 2;
+    if(state.length === 1){
+        return [
+            ...state,
+            {
+                id: generate(),
+                colour: colour().white(),
+                isRed: false
+            }
+        ]
+    }
     return [
-        ...state,
         {
-            id: shortid.generate(),
-            colour: odd ? helper.colour().white() : helper.colour().withoutRed(),
+            id: generate(),
+            colour: odd ? colour().silver() : colour().white(),
             isRed: false
-        }
+        },
+        ...state
     ];
 };
 

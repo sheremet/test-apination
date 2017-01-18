@@ -2,14 +2,20 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {initPreviewStripe} from './actions/actions';
 import Preview from './Preview';
-import shortid from 'shortid';
+import {generate} from 'shortid';
+import {changeColourOfStripe} from '../../shared/helper';
 
 class PreviewStripes extends Component {
 
     constructor(props) {
         super(props);
-        this.name = this.props.name || shortid.generate();
+        this.name = this.props.name || generate();
         this.props.initPreviewStripe(this.name);
+    }
+
+    clicked(e){
+        let self = this;
+        changeColourOfStripe(e, self, 'stripesPreview', this.name);
     }
 
     render() {
@@ -20,7 +26,7 @@ class PreviewStripes extends Component {
             />)
         });
         return (
-            <div className="preview-container">
+            <div className="preview-container" onClick={this.clicked.bind(this)}>
                 {stripes}
             </div>
         );

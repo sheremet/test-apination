@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {addStripe, removeStripe} from './actions/actions';
 import Stripe from './Stripe';
 import PreviewLayout from '../preview/PreviewLayout';
+import {changeColourOfStripe} from '../../shared/helper';
 import './main.css';
 
 class Stripes extends Component {
@@ -20,6 +21,11 @@ class Stripes extends Component {
         return this.props.stripes.length ? this.props.stripes[this.props.stripes.length - 1].id : 1;
     }
 
+    clicked(e){
+        let self = this;
+        changeColourOfStripe(e, self, 'stripes');
+    }
+
     render() {
         const stripes = this.props.stripes.map((stripe) => {
             return (<Stripe key={stripe.id}
@@ -31,7 +37,9 @@ class Stripes extends Component {
             <div className="stripes-container">
                 <div className="main">
                     <div className="container">
-                        <div className="main-stripes-container">{stripes}</div>
+                        <div className="main-stripes-container" onClick={this.clicked.bind(this)}>
+                            {stripes}
+                        </div>
                         <Controls
                             methods={{
                                 removeStripe: this.props.removeStripe,
