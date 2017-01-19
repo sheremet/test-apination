@@ -1,8 +1,9 @@
 import {ADD_STRIPE, REMOVE_STRIPE} from './actions/types';
 import {generate} from 'shortid';
-import {colour} from '../../shared/helper';
+import {colour, iArr} from '../../shared/helper';
 
-const init = (state, cnt = 8) => {
+const init = (cnt = 8) => {
+    let state = [];
     const generateItem = () => {
         let len = state.length,
             odd = len % 2,
@@ -35,55 +36,45 @@ const removeStripe = (state) => {
         return i;
     };
     const removeNotRed = (len, index)=>{
+
         if((len - 1) === index){
-            state.splice(index, 1);
+            return new iArr(state).removeFromIndex(index);
         }else {
-            state.splice(0, 1);
+            return new iArr(state).removeFromStart();
         }
     };
     let index = getIndexNotRed(state.length - 1);
     if (index >= 2) {
-        state.splice(0, 1);
-        return [
-            ...state
-        ];
+        return new iArr(state).removeFromStart();
     }else {
-        removeNotRed(state.length, index);
-        return [
-            ...state
-        ];
+        return removeNotRed(state.length, index);
     }
+
 };
 
 const addStripe = (state) => {
     let odd = state.length % 2;
     if(state.length === 1){
-        return [
-            ...state,
-            {
-                id: generate(),
-                colour: colour().white(),
-                isRed: false
-            }
-        ]
-    }
-    return [
-        {
+        return new iArr(state).addToEnd({
             id: generate(),
-            colour: odd ? colour().silver() : colour().white(),
+            colour: colour().white(),
             isRed: false
-        },
-        ...state
-    ];
+        });
+    }
+    return new iArr(state).addToStart({
+        id: generate(),
+        colour:odd ? colour().silver() : colour().white(),
+        isRed: false
+    });
 };
 
-export default (state = [], action = {}) => {
+export default (state = init(), action = {}) => {
     switch (action.type) {
         case ADD_STRIPE:
             return addStripe(state);
         case REMOVE_STRIPE:
             return removeStripe(state);
         default:
-            return !state.length ? init(state) : state;
+            return state;
     }
 }

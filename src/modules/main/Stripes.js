@@ -14,7 +14,7 @@ class Stripes extends Component {
     }
 
     setDecreaseButtonDisabled() {
-        return this.props.stripes.length === 1
+        return this.props.stripes.length === 2
     }
 
     getLastIndex() {

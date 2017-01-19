@@ -56,6 +56,7 @@ const removeStripe = (state) => {
             state[key].splice(0, 1);
         }
     };
+
     Object.keys(state).forEach((key) => {
         let len = state[key].length;
         let index = getIndexNotRed(key, len - 1);

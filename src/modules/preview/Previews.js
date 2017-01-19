@@ -42,7 +42,7 @@ function mapStateToProps(state) {
 
 PreviewStripes.PropTypes = {
     stripesMain: PropTypes.array.isRequired,
-    stripesPreview: PropTypes.array.isRequired,
+    stripesPreview: PropTypes.object.isRequired,
     initPreviewStripe: PropTypes.func.isRequired
 };
 

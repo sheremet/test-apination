@@ -47,6 +47,52 @@ export const changeColourOfStripe = (e, ctx, keyName, scope)=>{
     });
 };
 
+export class iArr {
+
+    constructor(arr){
+        this.arr = arr;
+        this.arrLen = arr.length;
+    }
+    removeFromStart(){
+        return [
+            ...this.arr.slice(1, this.arrLen)
+        ]
+    }
+    removeFromEnd(){
+        return [
+            ...this.arr.slice(0, this.arrLen - 1)
+        ]
+    }
+    addToStart(val){
+        return [
+            val,
+            ...this.arr
+        ]
+    }
+    addToEnd(val){
+        return [
+            ...this.arr,
+            val
+        ]
+    }
+
+    insertToIndex(index, values){
+        values = Array.isArray(values) ? values : [values];
+        return [
+            ...this.arr.slice(0, index),
+            ...values,
+            ...this.arr.slice(index, this.arrLen)
+        ]
+    }
+
+    removeFromIndex(index){
+        return [
+            ...this.arr.slice(0, index),
+            ...this.arr.slice(index + 1)
+        ]
+    }
+}
+
 let helper = {
     colour,
     random,
