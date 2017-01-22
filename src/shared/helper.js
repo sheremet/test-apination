@@ -34,19 +34,6 @@ export const colour = () => {
     }
 };
 
-export const changeColourOfStripe = (e, ctx, keyName, scope)=>{
-    let scopeCtx = scope ? ctx.props[keyName][scope] : ctx.props[keyName];
-    scopeCtx.forEach(function (v, k) {
-        if(v.id === e.nativeEvent.target.id
-            && !scopeCtx[k].colourChanged
-            && !scopeCtx[k].isRed
-        ){
-            e.nativeEvent.target.style.backgroundColor = colour().withoutRed();
-            scopeCtx[k].colourChanged = true;
-        }
-    });
-};
-
 export class iArr {
 
     constructor(arr){
@@ -92,11 +79,3 @@ export class iArr {
         ]
     }
 }
-
-let helper = {
-    colour,
-    random,
-    changeColourOfStripe
-};
-
-export default helper;

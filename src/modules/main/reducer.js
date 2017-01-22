@@ -1,4 +1,4 @@
-import {ADD_STRIPE, REMOVE_STRIPE} from './actions/types';
+import {ADD_STRIPE, REMOVE_STRIPE, CHANGE_COLOUR_STRIPE} from './actions/types';
 import {generate} from 'shortid';
 import {colour, iArr} from '../../shared/helper';
 
@@ -29,43 +29,35 @@ const init = (cnt = 8) => {
 };
 
 const removeStripe = (state) => {
-    const getIndexNotRed = (i) => {
-        if (state[i].isRed) {
-            return getIndexNotRed(i - 1);
-        }
-        return i;
-    };
-    const removeNotRed = (len, index)=>{
-
-        if((len - 1) === index){
-            return new iArr(state).removeFromIndex(index);
-        }else {
-            return new iArr(state).removeFromStart();
-        }
-    };
-    let index = getIndexNotRed(state.length - 1);
-    if (index >= 2) {
-        return new iArr(state).removeFromStart();
-    }else {
-        return removeNotRed(state.length, index);
-    }
-
+    return new iArr(state).removeFromStart();
 };
 
 const addStripe = (state) => {
     let odd = state.length % 2;
-    if(state.length === 1){
-        return new iArr(state).addToEnd({
-            id: generate(),
-            colour: colour().white(),
-            isRed: false
-        });
-    }
     return new iArr(state).addToStart({
         id: generate(),
-        colour:odd ? colour().silver() : colour().white(),
+        colour: odd ? colour().silver() : colour().white(),
         isRed: false
     });
+};
+
+const changeColour = (state, action) => {
+    const {id, isRed, colourChanged} = action;
+    if (!isRed && !colourChanged) {
+        let arr = [];
+        state.forEach((val) => {
+            let obj = {
+                ...val
+            };
+            if (obj.id === id) {
+                obj.colour = colour().withoutRed();
+                obj.colourChanged = true;
+            }
+            arr.push(obj);
+        });
+        return arr;
+    }
+    return state;
 };
 
 export default (state = init(), action = {}) => {
@@ -74,6 +66,9 @@ export default (state = init(), action = {}) => {
             return addStripe(state);
         case REMOVE_STRIPE:
             return removeStripe(state);
+        case CHANGE_COLOUR_STRIPE: {
+            return changeColour(state, action);
+        }
         default:
             return state;
     }

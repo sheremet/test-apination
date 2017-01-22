@@ -2,6 +2,15 @@ import React, {Component} from 'react';
 
 class Stripe extends Component{
 
+    constructor(props){
+        super(props);
+        this.changeColour = this.changeColour.bind(this)
+    }
+
+    changeColour(){
+        const {stripe, methods} = this.props;
+        methods.changeColour(stripe);
+    }
 
     getStripesWidth(){
         return  Math.round(100/this.props.stripesCount * 10000) / 10000+'%';
@@ -10,6 +19,7 @@ class Stripe extends Component{
     render(){
         return(
             <div className="stripe"
+                 onClick={this.changeColour}
                  id={this.props.stripe.id}
                  style={{backgroundColor:this.props.stripe.colour, width: this.getStripesWidth()}}
             ></div>)
