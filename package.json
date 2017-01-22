@@ -1,6 +1,6 @@
 {
   "name": "test-apination",
-  "version": "0.1.0",
+  "version": "0.0.3",
   "homepage": "https://sheremet.github.io/test-apination",
   "devDependencies": {
     "gh-pages": "^0.12.0",
