@@ -1,22 +1,23 @@
-import {ADD_STRIPE, REMOVE_STRIPE} from './actions/types';
-import shortid from 'shortid';
-import helper from '../../shared/helper';
+import {ADD_STRIPE, REMOVE_STRIPE, CHANGE_COLOUR_STRIPE} from './actions/types';
+import {generate} from 'shortid';
+import {colour, iArr} from '../../shared/helper';
 
-const init = (state, cnt = 8) => {
+const init = (cnt = 8) => {
+    let state = [];
     const generateItem = () => {
         let len = state.length,
             odd = len % 2,
             item = {
-                id: shortid.generate(),
+                id: generate(),
                 isRed: false
             };
         const returnObj = () => {
             if (len === 6) {
-                item.colour = helper.colour().red();
+                item.colour = colour().red();
                 item.isRed = true;
                 return item;
             }
-            item.colour = odd ? helper.colour().white() : helper.colour().silver();
+            item.colour = odd ? colour().white() : colour().silver();
             return item;
         };
         return returnObj();
@@ -28,41 +29,47 @@ const init = (state, cnt = 8) => {
 };
 
 const removeStripe = (state) => {
-    const getIndexNotRed = (i) => {
-        if (state[i].isRed) {
-            return getIndexNotRed(i - 1);
-        }
-        return i;
-    };
-    let index = getIndexNotRed(state.length - 1);
-    if (index >= 0 && state.length > 8) {
-        return [
-            ...state.slice(0, index),
-            ...state.slice(index + 1)
-        ];
-    }
-    return state;
+    return new iArr(state).removeFromStart();
 };
 
 const addStripe = (state) => {
     let odd = state.length % 2;
-    return [
-        ...state,
-        {
-            id: shortid.generate(),
-            colour: odd ? helper.colour().white() : helper.colour().withoutRed(),
-            isRed: false
-        }
-    ];
+    return new iArr(state).addToStart({
+        id: generate(),
+        colour: odd ? colour().silver() : colour().white(),
+        isRed: false
+    });
 };
 
-export default (state = [], action = {}) => {
+const changeColour = (state, action) => {
+    const {id, isRed, colourChanged} = action;
+    if (!isRed && !colourChanged) {
+        let arr = [];
+        state.forEach((val) => {
+            let obj = {
+                ...val
+            };
+            if (obj.id === id) {
+                obj.colour = colour().withoutRed();
+                obj.colourChanged = true;
+            }
+            arr.push(obj);
+        });
+        return arr;
+    }
+    return state;
+};
+
+export default (state = init(), action = {}) => {
     switch (action.type) {
         case ADD_STRIPE:
             return addStripe(state);
         case REMOVE_STRIPE:
             return removeStripe(state);
+        case CHANGE_COLOUR_STRIPE: {
+            return changeColour(state, action);
+        }
         default:
-            return !state.length ? init(state) : state;
+            return state;
     }
 }

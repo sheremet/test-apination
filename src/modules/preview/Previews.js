@@ -1,44 +1,60 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {initPreviewStripe} from './actions/actions';
+import {bindActionCreators} from 'redux';
+import * as actions from './actions/actions';
 import Preview from './Preview';
-import shortid from 'shortid';
-
+import {generate} from 'shortid';
 class PreviewStripes extends Component {
 
     constructor(props) {
         super(props);
-        this.name = this.props.name || shortid.generate();
-        this.props.initPreviewStripe(this.name);
+        this.name = this.props.name;
+        this.props.actions.initPreviewStripe(this.name);
     }
 
     render() {
-        let stripes = this.props.stripesPreview[this.name].map((stripe) => {
-            return (<Preview key={stripe.id}
-                             stripe={stripe}
-                             stripesCount={this.props.stripesPreview[this.name].length}
-            />)
-        });
-        return (
-            <div className="preview-container">
-                {stripes}
-            </div>
-        );
+        let stripesPreview = this.props.stripesPreview[this.name];
+        if (stripesPreview) {
+            let stripes = stripesPreview.map((stripe) => {
+                return (<Preview key={stripe.id}
+                                 stripe={stripe}
+                                 parentId={this.name}
+                                 stripesCount={stripesPreview.length}
+                                 methods={{changeColour: this.props.actions.changeColour}}
+                />)
+            });
+
+            return (
+                <div className="preview-container">
+                    {stripes}
+                </div>
+            );
+        }
+        return null;
+
     }
 }
 
-function mapStateToProps(state) {
+PreviewStripes.propTypes = {
+    stripesPreview: PropTypes.object,
+    actions: PropTypes.object.isRequired,
+    changeColour: PropTypes.func,
+    name: PropTypes.string
+};
+
+const mapStateToProps = (state, ownProps) => {
     return {
+        name: ownProps.name || generate(),
         stripesPreview: state.preview,
         stripes: state.main
     };
-}
 
-PreviewStripes.PropTypes = {
-    stripesMain: PropTypes.array.isRequired,
-    stripesPreview: PropTypes.array.isRequired,
-    initPreviewStripe: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps, {initPreviewStripe})(PreviewStripes);
+
+const mapStateToDispatch = (dispatch) => {
+    return {actions: bindActionCreators(actions, dispatch)}
+};
+
+export default connect(mapStateToProps, mapStateToDispatch)(PreviewStripes);
 

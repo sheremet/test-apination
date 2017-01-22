@@ -1,14 +1,10 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import {createStore, compose} from 'redux';
-import rootReducer from './rootReducers';
 import Stripes from './modules/main/Stripes';
+import storeInit from './store';
 import './common.css';
 
-let store = createStore(
-    rootReducer,
-    compose(window.devToolsExtension ? window.devToolsExtension() : f => f)
-);
+let store = storeInit();
 
 const Main = () => {
     return (

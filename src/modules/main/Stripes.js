@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {addStripe, removeStripe} from './actions/actions';
+import {bindActionCreators} from 'redux';
+import * as actions from './actions/actions';
 import Stripe from './Stripe';
 import PreviewLayout from '../preview/PreviewLayout';
 import './main.css';
@@ -13,11 +14,11 @@ class Stripes extends Component {
     }
 
     setDecreaseButtonDisabled() {
-        return this.props.stripes.length === 1
+        return this.props.stripes.length === 2
     }
 
     getLastIndex() {
-        return this.props.stripes.length ? this.props.stripes[this.props.stripes.length - 1].id : 1;
+        return this.props.stripes.length ? this.props.stripes.length - 2 : 0;
     }
 
     render() {
@@ -25,17 +26,22 @@ class Stripes extends Component {
             return (<Stripe key={stripe.id}
                             stripe={stripe}
                             stripesCount={this.props.stripes.length}
+                            methods={{
+                                changeColour: this.props.actions.changeColour
+                            }}
             />);
         });
         return (
             <div className="stripes-container">
                 <div className="main">
                     <div className="container">
-                        <div className="main-stripes-container">{stripes}</div>
+                        <div className="main-stripes-container">
+                            {stripes}
+                        </div>
                         <Controls
                             methods={{
-                                removeStripe: this.props.removeStripe,
-                                addStripe: this.props.addStripe
+                                removeStripe: this.props.actions.removeStripe,
+                                addStripe: this.props.actions.addStripe
                             }}
                             lastIndex={this.getLastIndex()}
                             increaseButtonDisabled={this.setIncreaseButtonToDisabled()}
@@ -45,7 +51,7 @@ class Stripes extends Component {
                 </div>
                 <div className="preview">
                     <div className="total">Total lines {this.props.stripes.length}</div>
-                    <PreviewLayout/>
+                    <PreviewLayout />
                 </div>
             </div>
         );
@@ -79,6 +85,10 @@ class Controls extends Component {
     }
 }
 
+Stripes.propTypes = {
+    stripes: PropTypes.array,
+    actions: PropTypes.object
+};
 function mapStateToProps(state) {
     return {
         type: state.type,
@@ -86,10 +96,8 @@ function mapStateToProps(state) {
     };
 }
 
-Stripes.PropTypes = {
-    stripes: PropTypes.array.isRequired,
-    removeStripe: PropTypes.func.isRequired,
-    addStripe: PropTypes.func.isRequired
+const mapStateToDispatch = (dispatch) => {
+    return {actions: bindActionCreators(actions, dispatch)}
 };
 
-export default connect(mapStateToProps, {removeStripe, addStripe})(Stripes);
+export default connect(mapStateToProps, mapStateToDispatch)(Stripes);
