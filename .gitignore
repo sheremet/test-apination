@@ -23,5 +23,5 @@ jspm_packages
 *.iml
 out
 gen
-/build/
-/src/
+build
+src
