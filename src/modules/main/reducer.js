@@ -32,17 +32,19 @@ const removeStripe = (state) => {
     return new iArr(state).removeFromStart();
 };
 
-const addStripe = (state) => {
+const addStripe = (state, action) => {
     let odd = state.length % 2;
-    return new iArr(state).addToStart({
+    let preparedObject = {
         id: generate(),
-        colour: odd ? colour().silver() : colour().white(),
-        isRed: false
-    });
+        colour: action.colour ? action.colour : (odd ? colour().silver() : colour().white()),
+        isRed: false,
+        colourChanged: action.colourChanged
+    };
+    return new iArr(state).addToStart(preparedObject);
 };
 
 const changeColour = (state, action) => {
-    const {id, isRed, colourChanged} = action;
+    const {id, isRed, colourChanged} = action.props;
     if (!isRed && !colourChanged) {
         let arr = [];
         state.forEach((val) => {
@@ -63,7 +65,7 @@ const changeColour = (state, action) => {
 export default (state = init(), action = {}) => {
     switch (action.type) {
         case ADD_STRIPE:
-            return addStripe(state);
+            return addStripe(state, action);
         case REMOVE_STRIPE:
             return removeStripe(state);
         case CHANGE_COLOUR_STRIPE: {

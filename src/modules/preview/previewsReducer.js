@@ -1,5 +1,5 @@
-import {ADD_STRIPE, REMOVE_STRIPE} from '../main/actions/types';
-import {INIT_PREVIEW_STRIPE, CHANGE_COLOUR_PREVIEW_STRIPE} from './actions/types';
+import {REMOVE_STRIPE} from '../main/actions/types';
+import {INIT_PREVIEW_STRIPE, CHANGE_COLOUR_PREVIEW_STRIPE, ON_ADD_PREVIEW_STRIPE} from './actions/types';
 import {generate} from 'shortid';
 import {random, colour} from '../../shared/helper';
 
@@ -35,17 +35,24 @@ const initPreviewStripe = (state, action) => {
     };
 };
 
-const addPreviewStripe = (state) => {
+const addPreviewStripe = (state, action) => {
+    const {props} = action;
+    const extendWithObject = (key) => {
+        return props[key] ? props[key] : {};
+    };
+
     let resultsAdd = {};
     for (let key in state) {
         if (state.hasOwnProperty(key)) {
             resultsAdd[key] = [
                 ...state[key],
-                {
+                Object.assign({
                     id: generate(),
                     colour: colour().withoutRed(),
                     isRed: false
-                }];
+                }, extendWithObject(key))
+
+            ];
         }
     }
     return resultsAdd;
@@ -88,7 +95,8 @@ const removePreviewStripe = (state) => {
 };
 
 const changeColourPreviewStripe = (state, action) => {
-    const {id, parentId, isRed, colourChanged} = action;
+    const {id, isRed, colourChanged} = action.props;
+    const {parentId} = action.meta;
     if (!isRed && !colourChanged) {
         let arr = [];
         state[parentId].forEach((val) => {
@@ -113,8 +121,8 @@ export default (state = {}, action = {}) => {
     switch (action.type) {
         case INIT_PREVIEW_STRIPE:
             return initPreviewStripe(state, action);
-        case ADD_STRIPE:
-            return addPreviewStripe(state);
+        case ON_ADD_PREVIEW_STRIPE:
+            return addPreviewStripe(state, action);
         case REMOVE_STRIPE:
             return removePreviewStripe(state);
         case CHANGE_COLOUR_PREVIEW_STRIPE:
