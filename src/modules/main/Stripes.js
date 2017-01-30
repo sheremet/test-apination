@@ -22,13 +22,14 @@ class Stripes extends Component {
     }
 
     render() {
-        const stripes = this.props.stripes.map((stripe) => {
+        const stripes = this.props.stripes.map((stripe, i) => {
             return (<Stripe key={stripe.id}
                             stripe={stripe}
                             stripesCount={this.props.stripes.length}
                             methods={{
                                 changeColour: this.props.actions.changeColour
                             }}
+                            index={i}
             />);
         });
         return (
@@ -43,6 +44,7 @@ class Stripes extends Component {
                                 removeStripe: this.props.actions.removeStripe,
                                 addStripe: this.props.actions.addStripe
                             }}
+                            stripes={this.props.stripes}
                             lastIndex={this.getLastIndex()}
                             increaseButtonDisabled={this.setIncreaseButtonToDisabled()}
                             decreaseButtonDisabled={this.setDecreaseButtonDisabled()}
@@ -70,7 +72,8 @@ class Controls extends Component {
     }
 
     addStripe() {
-        this.props.methods.addStripe();
+        const {stripes} = this.props;
+        this.props.methods.addStripe('main', stripes.length);
     }
 
     render() {
@@ -91,7 +94,6 @@ Stripes.propTypes = {
 };
 function mapStateToProps(state) {
     return {
-        type: state.type,
         stripes: state.main
     };
 }

@@ -15,12 +15,13 @@ class PreviewStripes extends Component {
     render() {
         let stripesPreview = this.props.stripesPreview[this.name];
         if (stripesPreview) {
-            let stripes = stripesPreview.map((stripe) => {
+            let stripes = stripesPreview.map((stripe, i) => {
                 return (<Preview key={stripe.id}
                                  stripe={stripe}
                                  parentId={this.name}
                                  stripesCount={stripesPreview.length}
                                  methods={{changeColour: this.props.actions.changeColour}}
+                                 index={i}
                 />)
             });
 

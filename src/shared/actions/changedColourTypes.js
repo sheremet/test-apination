@@ -1,0 +1,1 @@
+export const ON_CHANGE_COLOUR = 'ON_CHANGE_COLOUR';
